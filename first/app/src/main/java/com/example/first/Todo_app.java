@@ -75,7 +75,7 @@ public class Todo_app extends AppCompatActivity implements exampleDialoge.exampl
 
         recycler.setAdapter(taskadapter);
         //setting all tasks from db to list
-        taskLst=db.getAllTasks(sharedPreferences.getInt(KEY_NAME,-1));
+        taskLst=db.getAllTasks(sharedPreferences.getString(KEY_NAME,"-1"));
         taskadapter.setTask(taskLst);
         //making animation false so recycler view doesn't change its position
         RecyclerView.ItemAnimator animator = recycler.getItemAnimator();
@@ -102,7 +102,7 @@ public class Todo_app extends AppCompatActivity implements exampleDialoge.exampl
          spinner = (Spinner) findViewById(R.id.spinner);
         // Spinner click listener
 
-        int id = sharedPreferences.getInt(KEY_NAME,-1);
+        String id = sharedPreferences.getString(KEY_NAME,"-1");
 
         // Spinner Drop down elements
         List<String> item = new ArrayList<String>();

@@ -30,7 +30,7 @@ public class Db_Handler extends SQLiteOpenHelper {
     private static  final String TABLE_PERSON = "PERSON";
     private static  final String COL_ID = "ID";
     private static  final String COL_NAME = "NAME";
-    private static  final String COL_CONTACT = "CONTACT";
+    private static  final String COL_AGE = "AGE";
     private static  final String COL_EMAIL = "EMAIL";
     private static  final String COL_PASSWORD = "PASSWORD";
     //setting attributes of second table
@@ -47,7 +47,7 @@ public class Db_Handler extends SQLiteOpenHelper {
 
 
     public Db_Handler(@Nullable Context context ) {
-        super(context, DATABASE_NAME, null, 3);
+        super(context, DATABASE_NAME, null, 6);
         this.context=context;
     }
 
@@ -55,7 +55,7 @@ public class Db_Handler extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_PERSON + "(ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL , NAME TEXT NOT NULL, CONTACT TEXT NOT NULL, EMAIL TEXT NOT NULL, PASSWORD TEXT NOT NULL )");
+        db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_PERSON + "(ID TEXT PRIMARY KEY  NOT NULL , NAME TEXT NOT NULL, AGE TEXT NOT NULL, EMAIL TEXT NOT NULL, PASSWORD TEXT NOT NULL )");
         db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_TASK + "(ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,PERSON_ID INTEGET NOT NULL  , TITLE TEXT NOT NULL, DESCRIPTION TEXT NOT NULL, TIME TEXT NOT NULL, STATUS INTEGER NOT NULL, FOREIGN KEY (PERSON_ID) REFERENCES PERSON(ID) \n" +
                 "ON UPDATE CASCADE       ON DELETE CASCADE)");
 
@@ -119,8 +119,9 @@ public class Db_Handler extends SQLiteOpenHelper {
 
         db = super.getWritableDatabase();
         ContentValues values = new ContentValues();
+        values.put(COL_ID,model.getId());
         values.put(COL_NAME , model.getName());
-        values.put(COL_CONTACT , model.getContact());
+        values.put(COL_AGE , model.getAge());
         values.put(COL_EMAIL , model.getEmail());
         values.put(COL_PASSWORD , model.getPassword());
         db.insert(TABLE_PERSON , null , values);
@@ -140,17 +141,17 @@ public class Db_Handler extends SQLiteOpenHelper {
     }
     //this id is used in shared preferennces and as an foreign key in tasks table
     @SuppressLint("Range")
-    public  int getPersonId(String TableName, String emailColumn, String email, String passwordColumn, String pass) {
+    public  String getPersonId(String TableName, String emailColumn, String email, String passwordColumn, String pass) {
         db=super.getReadableDatabase();
         String Query = "Select * from " + TableName + " where " + emailColumn + " = '" + email+"' AND "+ passwordColumn + " = '" + pass+"'";
         Cursor cursor = db.rawQuery(Query, null);
-         int id=-1;
+         String id="-1";
         if(cursor.getCount() <= 0){
             cursor.close();
             return id;
         }
         cursor.moveToFirst();
-        id = cursor.getInt(cursor.getColumnIndex("ID"));
+        id = cursor.getString(cursor.getColumnIndex("ID"));
 
         //Toast.makeText(context, id+"", Toast.LENGTH_LONG).show();
         cursor.close();
@@ -158,9 +159,9 @@ public class Db_Handler extends SQLiteOpenHelper {
     }
     //this function returns name of a person who is currently login to the app
     @SuppressLint("Range")
-    public  String getPersonName( int id) {
+    public  String getPersonName( String id) {
         db=super.getReadableDatabase();
-        String Query = "Select * from " + "PERSON" + " where " + "ID" + " = " + id;
+        String Query = "Select * from " + "PERSON" + " where " + "ID" + " = '" + id+"'";
         Cursor cursor = db.rawQuery(Query, null);
         String name;
         if(cursor.getCount() <= 0){
@@ -176,12 +177,12 @@ public class Db_Handler extends SQLiteOpenHelper {
     }
     //this function returns the list of the person who is currently login taking input the id of the person which is gained by shared preferences
     @SuppressLint("Range")
-    public List<todoModel> getAllTasks(int i){
+    public List<todoModel> getAllTasks(String i){
 
 
         db = super.getWritableDatabase();
         Cursor cursor = null;
-        String Query = "Select * from " + TABLE_TASK + " where " + COL_PERSON_ID + " = " + i+" ";
+        String Query = "Select * from " + TABLE_TASK + " where " + COL_PERSON_ID + " = '" + i+"' ";
         List<todoModel> modelList = new ArrayList<>();
 
         db.beginTransaction();

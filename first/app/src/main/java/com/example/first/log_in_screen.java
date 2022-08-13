@@ -15,7 +15,14 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.first.ModelResponse.RegisterResponse;
+import com.example.first.model.personModel;
+
 import java.security.PrivateKey;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class log_in_screen extends AppCompatActivity {
 
@@ -72,12 +79,13 @@ public class log_in_screen extends AppCompatActivity {
                 String em = email.getText().toString();
                 pass=(EditText) findViewById(R.id.password);
                 String ps = pass.getText().toString();
+                /*
                 //when a person log in his key is saved in shared prefrence
                 SharedPreferences.Editor editor= sharedPreferences.edit();
-                int key;
+                String key;
                 key=db.getPersonId("PERSON","EMAIL",em,"PASSWORD",ps);
-                if(key!=-1) {
-                    editor.putInt(KEY_NAME,key );
+                if(key!="-1") {
+                    editor.putString(KEY_NAME,key );
                     editor.apply();
                 }
                 if(db.checkPerson("PERSON","EMAIL",em,"PASSWORD",ps)){
@@ -86,6 +94,53 @@ public class log_in_screen extends AppCompatActivity {
                 else{
                     Toast.makeText(getApplicationContext(), "Invalid credentials", Toast.LENGTH_LONG).show();
                 }
+                */
+                personModel p = new personModel(email.getText().toString(),pass.getText().toString());
+                Call<RegisterResponse> call = RetrofitClient.getInstance().getApi()
+                        .login("application/json",p);
+                call.enqueue(new Callback<RegisterResponse>() {
+                    @Override
+                    public void onResponse(Call<RegisterResponse> call, Response<RegisterResponse> response) {
+
+                        if(response.isSuccessful()) {
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            String key;
+                            //key=db.getPersonId("PERSON","EMAIL",em,"PASSWORD",ps);
+                            key = response.body().getUser().getId();
+                            if (key != "-1") {
+                                editor.putString(KEY_NAME, key);
+                                editor.apply();
+                                //openNewAvtivityOnbtnClick();
+                            }
+                            if (db.checkPerson("PERSON", "EMAIL",response.body().getUser().getEmail(), "PASSWORD", ps)) {
+
+                            } else {
+                                personModel p1 = new personModel(response.body().getUser().getName(),response.body().getUser().getEmail(),ps,response.body().getUser().getAge()+"",response.body().getUser().getId());
+                                db.insertPerson(p1);
+                            }
+
+                            openNewAvtivityOnbtnClick();
+                            Toast.makeText(getApplicationContext(), "login success", Toast.LENGTH_LONG).show();
+
+
+
+                        }
+                        else if(response.code()==400)
+                        {
+                            Toast.makeText(getApplicationContext(), "invalid credentials", Toast.LENGTH_LONG).show();
+                        }
+                        else
+                        {
+                            Toast.makeText(getApplicationContext(), "something went wrong", Toast.LENGTH_LONG).show();
+                        }
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<RegisterResponse> call, Throwable t) {
+                        Toast.makeText(getApplicationContext(), "connection error", Toast.LENGTH_LONG).show();
+                    }
+                });
 
             }
 

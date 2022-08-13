@@ -63,17 +63,17 @@
                 app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
             <EditText
-                android:id="@+id/phone"
+                android:id="@+id/age"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="24dp"
                 android:background="@drawable/input_bg"
-                android:drawableLeft="@drawable/ic_baseline_phone_24"
+                android:drawableLeft="@drawable/ic_baseline_calendar_today_24"
                 android:drawablePadding="10dp"
                 android:ems="10"
-                android:hint="Conact"
+                android:hint="Age"
                 android:inputType="phone"
                 android:paddingLeft="20dp"
                 android:paddingTop="13dp"
@@ -106,7 +106,7 @@
                 android:textColorHint="@color/white"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/phone" />
+                app:layout_constraintTop_toBottomOf="@+id/age" />
 
             <EditText
                 android:id="@+id/password"
