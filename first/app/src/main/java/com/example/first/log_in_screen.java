@@ -18,6 +18,7 @@ import android.widget.Toast;
 import com.example.first.ModelResponse.RegisterResponse;
 import com.example.first.model.personModel;
 
+import java.io.Console;
 import java.security.PrivateKey;
 
 import retrofit2.Call;
@@ -38,6 +39,7 @@ public class log_in_screen extends AppCompatActivity {
     SharedPreferences sharedPreferences;
     private  static final  String SHARED_PREF_NAME ="myPref";
     private  static final  String KEY_NAME ="id";
+    private  static final  String TOKEN ="token";
 
 
 
@@ -105,12 +107,16 @@ public class log_in_screen extends AppCompatActivity {
                         if(response.isSuccessful()) {
                             SharedPreferences.Editor editor = sharedPreferences.edit();
                             String key;
+                            String token;
                             //key=db.getPersonId("PERSON","EMAIL",em,"PASSWORD",ps);
                             key = response.body().getUser().getId();
+                            token =response.body().getToken();
                             if (key != "-1") {
                                 editor.putString(KEY_NAME, key);
+                                editor.putString(TOKEN, token);
                                 editor.apply();
                                 //openNewAvtivityOnbtnClick();
+
                             }
                             if (db.checkPerson("PERSON", "EMAIL",response.body().getUser().getEmail(), "PASSWORD", ps)) {
 
@@ -118,8 +124,9 @@ public class log_in_screen extends AppCompatActivity {
                                 personModel p1 = new personModel(response.body().getUser().getName(),response.body().getUser().getEmail(),ps,response.body().getUser().getAge()+"",response.body().getUser().getId());
                                 db.insertPerson(p1);
                             }
-
                             openNewAvtivityOnbtnClick();
+
+
                             Toast.makeText(getApplicationContext(), "login success", Toast.LENGTH_LONG).show();
 
 
@@ -141,6 +148,7 @@ public class log_in_screen extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(), "connection error", Toast.LENGTH_LONG).show();
                     }
                 });
+
 
             }
 
@@ -188,5 +196,6 @@ public class log_in_screen extends AppCompatActivity {
 
 
     }
+
 
 }

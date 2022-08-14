@@ -23,6 +23,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.first.ModelResponse.LogoutResponse;
+import com.example.first.ModelResponse.RegisterResponse;
 import com.example.first.adapter.todoAdapter;
 import com.example.first.model.editDialoge;
 import com.example.first.model.exampleDialoge;
@@ -34,6 +36,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 public class Todo_app extends AppCompatActivity implements exampleDialoge.exampleDialogeListner,recyclerViewInterface, editDialoge.editDialogeListner {
@@ -50,6 +57,7 @@ public class Todo_app extends AppCompatActivity implements exampleDialoge.exampl
     SharedPreferences sharedPreferences;
     private  static final  String SHARED_PREF_NAME ="myPref";
     private  static final  String KEY_NAME ="id";
+    private  static final  String TOKEN ="token";
 
     //return context of todo_app_activity
     public Context getContext() {
@@ -125,7 +133,33 @@ public class Todo_app extends AppCompatActivity implements exampleDialoge.exampl
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 if(String.valueOf(spinner.getSelectedItem()).toString().equals("Log out")){
                     Intent intent = new Intent(Todo_app.this, log_in_screen.class);
-                    startActivity(intent);
+                    Call<LogoutResponse> call = RetrofitClient.getInstance().getApi()
+                            .logout("Bearer "+sharedPreferences.getString(TOKEN,""));
+                    call.enqueue(new Callback<LogoutResponse>() {
+                        @Override
+                        public void onResponse(Call<LogoutResponse> call, Response<LogoutResponse> response) {
+                            if(response.isSuccessful() && Objects.requireNonNull(response.body()).getSuccess()){
+                                Toast.makeText(getApplicationContext(), "successfully logged out ", Toast.LENGTH_LONG).show();
+                                startActivity(intent);
+
+                            }
+                            else if(response.code() == 400){
+                                Toast.makeText(getApplicationContext(), "user not found", Toast.LENGTH_LONG).show();
+                            }
+                            else
+                            {
+                                Toast.makeText(getApplicationContext(), "user not found", Toast.LENGTH_LONG).show();
+                            }
+
+                        }
+
+                        @Override
+                        public void onFailure(Call<LogoutResponse> call, Throwable t) {
+                            Toast.makeText(getApplicationContext(), "connection error", Toast.LENGTH_LONG).show();
+                        }
+                    });
+
+
                 }
 
 
