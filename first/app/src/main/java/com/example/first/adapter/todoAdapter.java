@@ -2,6 +2,7 @@ package com.example.first.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -20,13 +21,19 @@ import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.first.Db_Handler;
+import com.example.first.ModelResponse.TaskResponse;
 import com.example.first.R;
+import com.example.first.RetrofitClient;
 import com.example.first.Todo_app;
 import com.example.first.model.todoModel;
 import com.example.first.recyclerViewInterface;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import retrofit2.Call;
 
 public  class todoAdapter extends RecyclerView.Adapter<todoAdapter.ViewHolder> {
     Db_Handler db;
@@ -34,6 +41,8 @@ public  class todoAdapter extends RecyclerView.Adapter<todoAdapter.ViewHolder> {
     private RecyclerView recycler;
     private Todo_app todo;
     private final recyclerViewInterface inter;
+
+
 
     public List<todoModel> getLst() {
         return lst;
@@ -43,12 +52,14 @@ public  class todoAdapter extends RecyclerView.Adapter<todoAdapter.ViewHolder> {
         this.db= db;
         this.todo=todo;
         this.inter=inter;
+
     }
 
 
     public ViewHolder onCreateViewHolder(ViewGroup parent , int viewType ){
         View itemView= LayoutInflater.from(parent.getContext()).inflate(R.layout.card_view, parent ,false);
         return new ViewHolder(itemView,inter);
+
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -86,6 +97,7 @@ public  class todoAdapter extends RecyclerView.Adapter<todoAdapter.ViewHolder> {
     }
 
     public void deleteItem(int position){
+
         //deleting from db
         db.deleteTask(lst.get(position).getId());
         //deleting from list

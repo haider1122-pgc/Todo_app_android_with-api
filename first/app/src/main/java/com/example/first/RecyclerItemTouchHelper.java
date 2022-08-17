@@ -22,6 +22,7 @@ import com.example.first.adapter.todoAdapter;
 public class RecyclerItemTouchHelper extends ItemTouchHelper.SimpleCallback {
 
     private todoAdapter adapter;
+    private Todo_app t;
     RecyclerView recyclerView;
 
 
@@ -30,9 +31,10 @@ public class RecyclerItemTouchHelper extends ItemTouchHelper.SimpleCallback {
         super.clearView(recyclerView, viewHolder);
     }
 
-    public RecyclerItemTouchHelper(todoAdapter adapter,RecyclerView recyclerView) {
+    public RecyclerItemTouchHelper(todoAdapter adapter,RecyclerView recyclerView,Todo_app t) {
         super(0, ItemTouchHelper.LEFT );
         this.adapter = adapter;
+        this.t=t;
         this.recyclerView=recyclerView;
     }
 
@@ -58,7 +60,9 @@ public class RecyclerItemTouchHelper extends ItemTouchHelper.SimpleCallback {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
 
-                            adapter.deleteItem(position);
+                            //adapter.deleteItem(position);
+
+                            t.deleteTask(position);
 
                         }
                     });

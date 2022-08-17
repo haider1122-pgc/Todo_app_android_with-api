@@ -4,39 +4,46 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class todoModel {
 
-    private String title,descriptipn;
+    private String title,description;
     private String time;
-    private boolean status;
-    private int id;
+    private boolean completed;
+    private String  id;
 
-    public todoModel(String title, String descriptipn, String time, boolean status,int id) {
+    public todoModel(String title, String descriptipn, String time, boolean status,String id) {
         this.title = title;
-        this.descriptipn = descriptipn;
+        this.description = descriptipn;
         this.time = time;
-        this.status = status;
+        this.completed = status;
         this.id=id;
 
 
     }
     public todoModel(String title, String descriptipn, String time, boolean status) {
         this.title = title;
-        this.descriptipn = descriptipn;
+        this.description = descriptipn;
         this.time = time;
-        this.status = status;
+        this.completed = status;
 
 
 
     }
+    public todoModel( boolean completed) {
+        this.completed = completed;
+    }
     public todoModel(String title, String descriptipn, String time) {
         this.title = title;
-        this.descriptipn = descriptipn;
+        this.description = descriptipn;
         this.time = time;
 
+
+    }
+    public todoModel(String description) {
+        this.description = description;
 
     }
 
     public void setStatus(boolean status) {
-        this.status = status;
+        this.completed = status;
     }
 
     public todoModel(){
@@ -47,12 +54,12 @@ public class todoModel {
         return title;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
     public String getDescriptipn() {
-        return descriptipn;
+        return description;
     }
 
     public String getTime() {
@@ -60,7 +67,7 @@ public class todoModel {
     }
 
     public boolean isStatus() {
-        return status;
+        return completed;
     }
     
 }

@@ -4,7 +4,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitClient {
-    private  static final String  BASE_URL= "https://api-nodejs-todolist.herokuapp.com/user/";
+    private  static final String  BASE_URL= "https://api-nodejs-todolist.herokuapp.com/";
     private  static  RetrofitClient retrofitClient;
     private  static Retrofit retrofit;
 

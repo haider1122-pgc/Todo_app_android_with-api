@@ -47,7 +47,7 @@ public class Db_Handler extends SQLiteOpenHelper {
 
 
     public Db_Handler(@Nullable Context context ) {
-        super(context, DATABASE_NAME, null, 6);
+        super(context, DATABASE_NAME, null, 7);
         this.context=context;
     }
 
@@ -56,7 +56,7 @@ public class Db_Handler extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_PERSON + "(ID TEXT PRIMARY KEY  NOT NULL , NAME TEXT NOT NULL, AGE TEXT NOT NULL, EMAIL TEXT NOT NULL, PASSWORD TEXT NOT NULL )");
-        db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_TASK + "(ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,PERSON_ID INTEGET NOT NULL  , TITLE TEXT NOT NULL, DESCRIPTION TEXT NOT NULL, TIME TEXT NOT NULL, STATUS INTEGER NOT NULL, FOREIGN KEY (PERSON_ID) REFERENCES PERSON(ID) \n" +
+        db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_TASK + "(ID TEXT PRIMARY KEY  NOT NULL,PERSON_ID TEXT NOT NULL  , TITLE TEXT NOT NULL, DESCRIPTION TEXT NOT NULL, TIME TEXT NOT NULL, STATUS INTEGER NOT NULL, FOREIGN KEY (PERSON_ID) REFERENCES PERSON(ID) \n" +
                 "ON UPDATE CASCADE       ON DELETE CASCADE)");
 
     }
@@ -70,10 +70,11 @@ public class Db_Handler extends SQLiteOpenHelper {
 
     }
     //this function inserts task in tasks table
-    public void insertTask(@NonNull todoModel model, int personID){
+    public void insertTask(@NonNull todoModel model, String personID){
 
         db = super.getWritableDatabase();
         ContentValues values = new ContentValues();
+        values.put(COL_TASK_ID,model.getId());
         values.put(COL_TITLE , model.getTitle());
         values.put(COL_DESCRIPTION , model.getDescriptipn());
         values.put(COL_TIME , model.getTime());
@@ -91,7 +92,7 @@ public class Db_Handler extends SQLiteOpenHelper {
         //Toast.makeText(context, "Added", Toast.LENGTH_LONG).show();
     }
     //this function deletes a provided id task from list
-    public void deleteTask(int id ){
+    public void deleteTask(String id ){
 
         db = this.getWritableDatabase();
         db.delete(TABLE_TASK , "ID=?" , new String[]{String.valueOf(id)});
@@ -99,14 +100,14 @@ public class Db_Handler extends SQLiteOpenHelper {
 
     }
     //this function only updates status of task in db
-    public void updateStatus(int id , int status){
+    public void updateStatus(String id , int status){
         db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(COL_STATUS , status);
         db.update(TABLE_TASK , values , "ID=?" , new String[]{String.valueOf(id)});
     }
     //this function updated task title description and time not status
-    public void updateTask(int id , String title,String description, String time){
+    public void updateTask(String id , String title,String description, String time){
         db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(COL_TITLE,title);
@@ -199,7 +200,7 @@ public class Db_Handler extends SQLiteOpenHelper {
                         else{
                             status=false;
                         }
-                        @SuppressLint("Range") todoModel task = new todoModel(cursor.getString(cursor.getColumnIndex(COL_TITLE)),cursor.getString(cursor.getColumnIndex(COL_DESCRIPTION)),cursor.getString(cursor.getColumnIndex(COL_TIME)),status,cursor.getInt(cursor.getColumnIndex(COL_TASK_ID)));
+                        @SuppressLint("Range") todoModel task = new todoModel(cursor.getString(cursor.getColumnIndex(COL_TITLE)),cursor.getString(cursor.getColumnIndex(COL_DESCRIPTION)),cursor.getString(cursor.getColumnIndex(COL_TIME)),status,cursor.getString(cursor.getColumnIndex(COL_TASK_ID)));
                         modelList.add(task);
 
                     }while (cursor.moveToNext());
